@@ -1,3 +1,11 @@
+run: build
+	./la-service
+
+build:
+	go build -o la-service ./cmd/*
+
+test:
+	go test ./... -v
 
 postgres:
 	docker run --rm \
