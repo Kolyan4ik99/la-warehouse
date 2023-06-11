@@ -7,6 +7,7 @@ import (
 	"la-warehouse/internal/service"
 	"la-warehouse/internal/transport"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -14,11 +15,22 @@ import (
 
 func main() {
 	log := NewLogger()
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, os.Kill)
+	go func() {
+		<-sig
+		log.Info().Msg("application successful exit")
+		os.Exit(0)
+	}()
+
+	log.Debug().Msg("init config")
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
+	log.Debug().Msg("init postgres connection")
 	pg, err := repo.NewPostgres(cfg.Postgres)
 	if err != nil {
 		log.Fatal().Err(err).Send()
@@ -28,10 +40,14 @@ func main() {
 		log.Fatal().Err(err).Send()
 	}
 
+	log.Debug().Msg("init service warehouse")
 	serv := service.NewWarehouse(log, pg)
 
+	log.Debug().Msg("init handler warehouse")
 	wh := transport.NewWarehouse(serv)
-	err = wh.ListenAndServe(":8080")
+
+	log.Info().Msg("application is started")
+	err = wh.ListenAndServe(":" + cfg.Http.Port)
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
