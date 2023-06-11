@@ -10,7 +10,8 @@ import (
 const configPath = "./config/config.yml"
 
 type Config struct {
-	Postgres `yaml:"Postgres"`
+	Postgres Postgres `yaml:"Postgres"`
+	Http     Http     `yaml:"Http"`
 }
 
 type Postgres struct {
@@ -26,6 +27,10 @@ type Postgres struct {
 		MaxIdleConns    int           `yaml:"MaxIdleConns"`
 		MaxIdleLifeTime time.Duration `yaml:"MaxIdleLifeTime"`
 	}
+}
+
+type Http struct {
+	Port string `yaml:"Port"`
 }
 
 func LoadConfig() (*Config, error) {

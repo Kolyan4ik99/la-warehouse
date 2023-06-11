@@ -10,3 +10,5 @@ Postgres:
     ConnMaxLifeTime: 60
     MaxIdleConns: 20
     MaxIdleLifeTime: 30
+Http:
+  Port: "8080"
