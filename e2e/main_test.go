@@ -28,7 +28,7 @@ type ReqReservation struct {
 
 type RespReservation struct {
 	Result struct {
-		Products []model.RespReservation `json:"products"`
+		RespReservation []model.RespReservation `json:"products"`
 	} `json:"result"`
 	Error interface{} `json:"error"`
 	Id    int         `json:"id"`
@@ -73,13 +73,11 @@ func TestMain(m *testing.M) {
 			return
 		}
 	}()
-	//time.Sleep(time.Second * 5)
 	m.Run()
 }
 
 func initTestContainer() (string, string) {
 	var err error
-	// uses a sensible default on windows (tcp/http) and linux/osx (socket)
 	pool, err = dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
