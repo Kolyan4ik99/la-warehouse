@@ -26,9 +26,29 @@ type ReqReservation struct {
 	Id     int                    `json:"id"`
 }
 
+type ReqReservationFree struct {
+	Method string                     `json:"method"`
+	Params []model.ReqReservationFree `json:"params"`
+	Id     int                        `json:"id"`
+}
+
+type ReqGetAmountProducts struct {
+	Method string                       `json:"method"`
+	Params []model.ReqGetAmountProducts `json:"params"`
+	Id     int                          `json:"id"`
+}
+
 type RespReservation struct {
 	Result struct {
-		RespReservation []model.RespReservation `json:"products"`
+		RespReservation []model.ProductsStatus `json:"products"`
+	} `json:"result"`
+	Error interface{} `json:"error"`
+	Id    int         `json:"id"`
+}
+
+type RespGetAmountProducts struct {
+	Result struct {
+		Amount int64 `json:"amount"`
 	} `json:"result"`
 	Error interface{} `json:"error"`
 	Id    int         `json:"id"`
@@ -38,10 +58,12 @@ const (
 	POSTGRES_PASSWORD = "postgres"
 	POSTGRES_USER     = "postgres"
 	POSTGRES_DB       = "postgres"
-	TEST_URL          = ":8012"
+	SERVER_URL        = ":8012"
 
-	RESERVATION_METHOD     = "Warehouse.Reservation"
-	RESERVATIONFREE_METHOD = "Warehouse.ReservationFree"
+	REQUEST_URL                = "http://localhost:8012/rpc"
+	RESERVATION_METHOD         = "Warehouse.Reservation"
+	RESERVATION_FREE_METHOD    = "Warehouse.ReservationFree"
+	GET_AMOUNT_PRODUCTS_METHOD = "Warehouse.GetAmountProducts"
 )
 
 var (
@@ -68,7 +90,7 @@ func TestMain(m *testing.M) {
 
 	transportWh := transport.NewWarehouse(serv)
 	go func() {
-		err := transportWh.ListenAndServe(TEST_URL)
+		err := transportWh.ListenAndServe(SERVER_URL)
 		if err != nil {
 			return
 		}
