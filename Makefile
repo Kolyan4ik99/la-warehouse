@@ -2,6 +2,7 @@ run: build
 	./la-service
 
 build:
+	go mod tidy
 	go build -o la-service ./cmd/*
 
 test:
