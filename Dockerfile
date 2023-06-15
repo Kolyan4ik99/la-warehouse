@@ -10,12 +10,12 @@ COPY go.mod .
 COPY go.sum .
 
 # билд
-RUN CGO_ENABLED=0 GOOS=linux go build -o build/ags ./cmd/ags
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./ ./cmd/main
 
 ## Deploy
 FROM alpine
 
 # копируем билд в alpine контейнер с заметно меньшим размером
-COPY --from=build /go/src/srvgitlab.imatic.pro/imatic/ags/build/ags /usr/bin/ags
+COPY --from=build /go/src ./
 
-ENTRYPOINT ["/usr/bin/ags", "start", "--cfgname", "app/config.yml"]
+ENTRYPOINT ["./main"]
